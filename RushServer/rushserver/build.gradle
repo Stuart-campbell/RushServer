@@ -1,0 +1,9 @@
+apply plugin: 'java'
+
+dependencies {
+    compile project(':rushcore')
+    compile 'com.jolbox:bonecp:0.8.0.RELEASE'
+    compile 'mysql:mysql-connector-java:5.1.6'
+    compile 'com.google.code.gson:gson:2.2.4'
+    compile 'net.sourceforge.stripes:stripes:1.5'
+}

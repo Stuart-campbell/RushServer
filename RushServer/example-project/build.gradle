@@ -1,0 +1,10 @@
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'jetty'
+
+dependencies {
+    providedCompile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.0.1'
+    runtime 'javax.servlet:jstl:1.1.2'
+
+    compile project(':rushserver')
+}

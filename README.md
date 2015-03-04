@@ -8,6 +8,19 @@ RushServer is build on RushCore with MySQL version 5.6.22, running through Jetty
 This project is in it's early stages but is a thin layer on the solid footing of RushCore used also by RushAndroid.
 
 <hr>
+### Maven
+
+    <repository>
+	    <url>http://maven.rushorm.com</url>
+    </repository>
+
+    <dependency>
+	    <groupId>co.uk.rushorm</groupId>
+	    <artifactId>rushserver</artifactId>
+	    <version>0.1.0</version>
+    </dependency>
+
+<hr>
 
 ### Licence Apache License, Version 2.0
 Copyright (C) 2015 Stuart Campbell

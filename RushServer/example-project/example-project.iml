@@ -14,9 +14,9 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="rushserver" exported="" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: javax.servlet-api-3.0.1" level="project" />
     <orderEntry type="library" exported="" scope="RUNTIME" name="Gradle: jstl-1.1.2" level="project" />
-    <orderEntry type="module" module-name="rushserver" exported="" />
   </component>
 </module>
 

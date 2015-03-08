@@ -17,7 +17,7 @@ This project is in it's early stages but is a thin layer on the solid footing of
     <dependency>
 	    <groupId>co.uk.rushorm</groupId>
 	    <artifactId>rushserver</artifactId>
-	    <version>0.1.0</version>
+	    <version>0.2.0</version>
     </dependency>
 
 <hr>

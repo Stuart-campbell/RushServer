@@ -3,6 +3,7 @@ package co.uk.rushorm.rushserver;
 
 import net.sourceforge.stripes.util.ResolverUtil;
 
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -31,6 +32,12 @@ public class ServerRushClassFinder implements RushClassFinder {
         if(!classes.contains(ServerDBVersion.class)) {
             classes.add(ServerDBVersion.class);
         }
-        return new ArrayList<Class>(classes);
+        List<Class> classList = new ArrayList<>();
+        for(Class clazz : classes) {
+            if(!Modifier.isAbstract(clazz.getModifiers())) {
+                classList.add(clazz);
+            }
+        }
+        return classList;
     }
 }

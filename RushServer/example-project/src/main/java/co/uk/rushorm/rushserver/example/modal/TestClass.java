@@ -21,7 +21,7 @@ public class TestClass extends RushObject {
     
     public TestClass2 testClass2;
     
-    @RushList(classname = "co.uk.rushorm.rushserver.example.modal.TestClass2")
+    @RushList(classType = TestClass2.class)
     public List<TestClass2> testClass2List;
     
 }

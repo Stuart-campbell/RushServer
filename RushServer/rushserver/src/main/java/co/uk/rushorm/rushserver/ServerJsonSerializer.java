@@ -91,7 +91,7 @@ public class ServerJsonSerializer implements RushObjectSerializer {
                 if (Rush.class.isAssignableFrom(field.getType())) {
                     JsonObject object = serializeToJSONObject((Rush) field.get(rush), idName, versionName, rushColumns, annotationCache, rushStringSanitizer, callback);
                     jsonObject.add(field.getName(), object);
-                } else if (annotationCache.get(rush.getClass()).getListsFields().containsKey(field.getName())) {
+                } else if (annotationCache.get(rush.getClass()).getListsClasses().containsKey(field.getName())) {
                     JsonArray array = serializeToJSONArray((List<Rush>) field.get(rush), idName, versionName, rushColumns, annotationCache, rushStringSanitizer, callback);
                     jsonObject.add(field.getName(), array);
                 } else if (rushColumns.supportsField(field)) {

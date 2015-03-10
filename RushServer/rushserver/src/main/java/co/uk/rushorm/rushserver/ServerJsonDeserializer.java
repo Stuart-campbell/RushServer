@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -22,21 +23,23 @@ import co.uk.rushorm.core.implementation.ReflectionUtils;
  * Created by Stuart on 02/03/15.
  */
 public class ServerJsonDeserializer implements RushObjectDeserializer {
+
     @Override
-    public List<Rush> deserialize(String string, String idName, String versionName, RushColumns rushColumns, Map<Class, AnnotationCache> annotationCache, Callback callback) {
+    public <T extends Rush> List<T> deserialize(String string, String idName, String versionName, RushColumns rushColumns, Map<Class, AnnotationCache> annotationCache, Class<T> clazz, Callback callback) {
 
         try {
             JsonParser parser = new JsonParser();
             JsonObject jsonObject = parser.parse(string).getAsJsonObject();
 
-            List<Rush> objects = new ArrayList<>();
+            List<T> objects = new ArrayList<>();
 
             for (Map.Entry<String, JsonElement> entry : jsonObject.entrySet()) {
                 String className = entry.getKey();
-                Class clazz = classFromString(className, annotationCache);
+                Class<? extends Rush> objectClazz = classFromString(className, annotationCache);
                 if(clazz != null) {
                     JsonArray jsonArray = entry.getValue().getAsJsonArray();
-                    objects.addAll(deserializeJSONArray(jsonArray, idName, versionName, clazz, rushColumns, annotationCache, callback));
+                    List<? extends Rush> objectList = deserializeJSONArray(jsonArray, idName, versionName, objectClazz, ArrayList.class, rushColumns, annotationCache, callback);
+                    objects.addAll((List<? extends T>) objectList);
                 }
             }
             
@@ -56,12 +59,20 @@ public class ServerJsonDeserializer implements RushObjectDeserializer {
         return null;
     }
 
-    private List<Rush> deserializeJSONArray(JsonArray jsonArray, String idName, String versionName, Class<? extends Rush> clazz, RushColumns rushColumns, Map<Class, AnnotationCache> annotationCache, Callback callback) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    private <T extends Rush> List<T> deserializeJSONArray(JsonArray jsonArray, String idName, String versionName, Class<T> clazz, Class<? extends List> listClazz, RushColumns rushColumns, Map<Class, AnnotationCache> annotationCache, Callback callback) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         if(jsonArray.size() < 1){
             return null;
         }
 
-        List<Rush> objects = new ArrayList<>();
+        List<T> objects;
+        try {
+            Constructor<? extends List> constructor = listClazz.getConstructor();
+            objects = constructor.newInstance();
+        } catch (InstantiationException | InvocationTargetException | NoSuchMethodException e) {
+            e.printStackTrace();
+            objects = new ArrayList<>();
+        }
+
         for (int i = 0; i < jsonArray.size(); i ++) {
             JsonObject jsonObject = jsonArray.get(i).getAsJsonObject();
             objects.add(deserializeJSONObject(jsonObject, idName, versionName, clazz, rushColumns, annotationCache, callback));
@@ -69,12 +80,12 @@ public class ServerJsonDeserializer implements RushObjectDeserializer {
         return objects;
     }
 
-    private Rush deserializeJSONObject(JsonObject object, String idName, String versionName, Class<? extends Rush> clazz, RushColumns rushColumns, Map<Class, AnnotationCache> annotationCache, Callback callback) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+    private <T extends Rush> T deserializeJSONObject(JsonObject object, String idName, String versionName, Class<T> clazz, RushColumns rushColumns, Map<Class, AnnotationCache> annotationCache, Callback callback) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
 
         List<Field> fields = new ArrayList<>();
         ReflectionUtils.getAllFields(fields, clazz);
 
-        Rush rush = clazz.getConstructor().newInstance();
+        T rush = (T) clazz.getConstructor().newInstance();
 
         for (Field field : fields) {
             if (!annotationCache.get(clazz).getFieldToIgnore().contains(field.getName()) && object.has(field.getName())) {
@@ -83,10 +94,11 @@ public class ServerJsonDeserializer implements RushObjectDeserializer {
                     JsonObject childJSONObject = object.getAsJsonObject(field.getName());
                     Rush child = deserializeJSONObject(childJSONObject, idName, versionName, (Class<? extends Rush>) field.getType(), rushColumns, annotationCache, callback);
                     field.set(rush, child);
-                } else if (annotationCache.get(clazz).getListsFields().containsKey(field.getName())) {
-                    Class childClazz = annotationCache.get(clazz).getListsFields().get(field.getName());
+                } else if (annotationCache.get(clazz).getListsClasses().containsKey(field.getName())) {
+                    Class childClazz = annotationCache.get(clazz).getListsClasses().get(field.getName());
+                    Class listClazz = annotationCache.get(clazz).getListsTypes().get(field.getName());
                     JsonArray jsonArray = object.getAsJsonArray(field.getName());
-                    List<Rush> children = deserializeJSONArray(jsonArray, idName, versionName, childClazz, rushColumns, annotationCache, callback);
+                    List<Rush> children = deserializeJSONArray(jsonArray, idName, versionName, childClazz, listClazz, rushColumns, annotationCache, callback);
                     field.set(rush, children);
                 } else if (rushColumns.supportsField(field)) {
                     String value = object.getAsJsonPrimitive(field.getName()).getAsString();

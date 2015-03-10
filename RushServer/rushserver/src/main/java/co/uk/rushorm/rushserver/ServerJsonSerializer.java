@@ -29,7 +29,7 @@ public class ServerJsonSerializer implements RushObjectSerializer {
     };
 
     @Override
-    public String serialize(List<? extends Rush> objects, String idName, String versionName, RushColumns rushColumns, Map<Class, AnnotationCache> annotationCache, Callback callback) {
+    public String serialize(List<? extends Rush> objects, String idName, String versionName, RushColumns rushColumns, Map<Class<? extends Rush>, AnnotationCache> annotationCache, Callback callback) {
 
         Map<Class, JsonArray> arraysMap = new HashMap<>();
 
@@ -54,7 +54,7 @@ public class ServerJsonSerializer implements RushObjectSerializer {
         return jsonObject.toString();
     }
 
-    private JsonArray serializeToJSONArray(List<? extends Rush> objects, String idName, String versionName, RushColumns rushColumns, Map<Class, AnnotationCache> annotationCache, RushStringSanitizer rushStringSanitizer, Callback callback) {
+    private JsonArray serializeToJSONArray(List<? extends Rush> objects, String idName, String versionName, RushColumns rushColumns, Map<Class<? extends Rush>, AnnotationCache> annotationCache, RushStringSanitizer rushStringSanitizer, Callback callback) {
 
         JsonArray jsonArray = new JsonArray();
         if(objects != null) {
@@ -69,7 +69,7 @@ public class ServerJsonSerializer implements RushObjectSerializer {
         return jsonArray;
     }
 
-    private JsonObject serializeToJSONObject(Rush rush, String idName, String versionName, RushColumns rushColumns, Map<Class, AnnotationCache> annotationCache, RushStringSanitizer rushStringSanitizer, Callback callback) throws IllegalAccessException {
+    private JsonObject serializeToJSONObject(Rush rush, String idName, String versionName, RushColumns rushColumns, Map<Class<? extends Rush>, AnnotationCache> annotationCache, RushStringSanitizer rushStringSanitizer, Callback callback) throws IllegalAccessException {
 
         if(rush == null) {
             return null;

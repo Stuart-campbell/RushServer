@@ -23,7 +23,7 @@ public class ServerRushClassFinder implements RushClassFinder {
     }
     
     @Override
-    public List<Class> findClasses(RushConfig rushConfig) {
+    public List<Class<? extends Rush>> findClasses(RushConfig rushConfig) {
 
         ResolverUtil<Rush> resolver = new ResolverUtil<>();
         resolver.findImplementations(Rush.class, packageName);
@@ -31,6 +31,12 @@ public class ServerRushClassFinder implements RushClassFinder {
         if(!classes.contains(ServerDBVersion.class)) {
             classes.add(ServerDBVersion.class);
         }
-        return new ArrayList<Class>(classes);
+
+        List<Class<? extends Rush>> list = new ArrayList<>();
+        for (Class<? extends Rush> clazz : classes) {
+            list.add(clazz);
+        }
+        
+        return list;
     }
 }

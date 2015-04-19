@@ -4,10 +4,8 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/RushServer.iml" filepath="$PROJECT_DIR$/RushServer.iml" />
       <module fileurl="file://$PROJECT_DIR$/example-project/example-project.iml" filepath="$PROJECT_DIR$/example-project/example-project.iml" />
-      <module fileurl="file://$PROJECT_DIR$/rush-server.iml" filepath="$PROJECT_DIR$/rush-server.iml" />
       <module fileurl="file://$PROJECT_DIR$/rushcore/rushcore.iml" filepath="$PROJECT_DIR$/rushcore/rushcore.iml" />
       <module fileurl="file://$PROJECT_DIR$/rushserver/rushserver.iml" filepath="$PROJECT_DIR$/rushserver/rushserver.iml" />
     </modules>
   </component>
 </project>
-

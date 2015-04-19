@@ -55,6 +55,11 @@ public class ServerRushConfig implements RushConfig {
         return true;
     }
 
+    @Override
+    public boolean userBulkInsert() {
+        return true;
+    }
+
     public String getUsername() {
         return username;
     }
